@@ -9,5 +9,5 @@ include_directories(
 )
 foreach(example IN LISTS examples)
     add_executable(${example} ${example}.c)
-    target_link_libraries(${example} ${PROJECT_NAME}_static)
+    target_link_libraries(${example} ${LIB_NAME})
 endforeach()

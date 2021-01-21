@@ -112,7 +112,9 @@ static long getCurrentThreadID(void)
 #elif __linux__
     return syscall(SYS_gettid);
 #elif defined(__APPLE__) && defined(__MACH__)
-    return syscall(SYS_thread_selfid);
+    uint64_t tid64;
+    pthread_threadid_np(NULL, &tid64);
+    return tid64;
 #else
     return (long) pthread_self();
 #endif /* defined(_WIN32) || defined(_WIN64) */

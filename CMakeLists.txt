@@ -1,40 +1,32 @@
-cmake_minimum_required(VERSION 2.8.11)
-project(logger C)
+cmake_minimum_required(VERSION 3.17)
+set(LIB_NAME logger)
+project(${LIB_NAME} C)
 
-set(CMAKE_C_FLAGS "-Wall -std=c89")
-set(CMAKE_C_FLAGS_RELEASE "-O2 -DNDEBUG")
-set(CMAKE_C_FLAGS_DEBUG "-g")
+set(CMAKE_C_STANDARD 90)
 
 option(build_tests "Build all of own tests" OFF)
 option(build_examples "Build example programs" OFF)
 option(build_docs "Build doxygen documentation" OFF)
+#include_directories(src)
 
-### Library
-set(source_files
-    src/logger.c
-    src/loggerconf.c
-)
-# shared and static libraries
-add_library(${PROJECT_NAME} SHARED ${source_files})
-add_library(${PROJECT_NAME}_static STATIC ${source_files})
-set_target_properties(${PROJECT_NAME}_static PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
+set( ${LIB_NAME}_srcs
+        src/logger.c
+        src/logger.h
+        src/loggerconf.c
+        src/loggerconf.h)
 
-# Export the include directory
-target_include_directories(
-    ${PROJECT_NAME} PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
-target_include_directories(
-    ${PROJECT_NAME}_static PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/src>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-)
+add_library(${LIB_NAME}  ${${LIB_NAME}_srcs} )
 
-### Install
-install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
-file(GLOB header_files src/*.h)
-install(FILES ${header_files} DESTINATION ${CMAKE_INSTALL_PREFIX}/include)
+install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME}Targets
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION lib
+        INCLUDES destination include)
+
+install(EXPORT ${LIB_NAME}Targets
+        FILE ${${LIB_NAME}Targets}.cmake
+        NAMESPACE ${LIB_NAME}
+        DESTINATION lib/cmake/${LIB_NAME})
 
 ### Document
 if(build_docs)
