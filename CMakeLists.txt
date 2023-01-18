@@ -15,7 +15,7 @@ set( ${LIB_NAME}_srcs
         src/loggerconf.c
         src/loggerconf.h)
 
-add_library(${LIB_NAME}  ${${LIB_NAME}_srcs} )
+add_library(${LIB_NAME}  STATIC ${${LIB_NAME}_srcs} )
 
 install(TARGETS ${LIB_NAME} EXPORT ${LIB_NAME}Targets
         LIBRARY DESTINATION lib
